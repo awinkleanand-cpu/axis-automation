@@ -7,7 +7,8 @@ Production-ready Selenium framework for automating the Axis Max Life insurance a
 - **Page Object Model (POM)** for maintainable test design
 - **WebDriverWait** for reliable synchronization with dynamic UI
 - **ExtentReports** HTML dashboard with step-by-step logs and screenshots
-- **JSON test results** for CI/CD integration
+- **JSON and Excel test results** for CI/CD integration
+- **Email report on failure** with HTML report, Excel, and screenshot attachments
 - **Log4j2** file and console logging
 - **Screenshot capture** on every major step and on failure
 - **TestNG listener** for automatic pass/fail reporting
@@ -35,6 +36,7 @@ axis-automation/
 └── test-output/                                # Generated after test run
     ├── reports/ExtentReport.html               # Main HTML report
     ├── results/test-results.json               # Machine-readable results
+    ├── results/test-results.xlsx               # Excel summary report
     ├── screenshots/                            # Step and failure screenshots
     └── logs/automation.log                     # Execution logs
 ```
@@ -59,6 +61,7 @@ After execution, open:
 |---|---|
 | HTML Report | `test-output/reports/ExtentReport.html` |
 | JSON Results | `test-output/results/test-results.json` |
+| Excel Results | `test-output/results/test-results.xlsx` |
 | Logs | `test-output/logs/automation.log` |
 | Screenshots | `test-output/screenshots/` |
 | TestNG Report | `target/surefire-reports/index.html` |
@@ -75,6 +78,23 @@ After execution, open:
 ## Configuration
 
 Edit `resources/config.properties` for credentials, test data, waits, and retry count.
+
+### Email on failure
+
+1. Set `email.enabled=true` in `resources/config.properties`
+2. Configure SMTP settings (`email.smtp.host`, `email.smtp.username`, etc.)
+3. Set the password via environment variable (recommended):
+
+```bash
+set EMAIL_PASSWORD=your_app_password
+mvn clean test
+```
+
+When any test fails, an email is sent with:
+- Execution summary in the body
+- `ExtentReport.html` attached
+- `test-results.xlsx` attached
+- Latest failure screenshot attached
 
 ## Notes
 

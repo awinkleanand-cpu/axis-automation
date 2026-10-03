@@ -36,6 +36,10 @@ public final class TestResultWriter {
         RESULTS.add(result);
     }
 
+    public static synchronized List<Map<String, Object>> getResults() {
+        return List.copyOf(RESULTS);
+    }
+
     public static synchronized void writeSummary(int passed, int failed, int skipped) {
         try {
             Files.createDirectories(FrameworkConstants.RESULTS_DIR);
@@ -50,6 +54,9 @@ public final class TestResultWriter {
 
             MAPPER.writeValue(FrameworkConstants.RESULTS_DIR.resolve("test-results.json").toFile(), summary);
             LOGGER.info("JSON test results written to {}", FrameworkConstants.JSON_RESULTS_PATH);
+
+            ExcelResultWriter.writeSummary(passed, failed, skipped, getResults());
+            EmailReporter.sendReportIfRequired(passed, failed, skipped, getResults());
         } catch (IOException exception) {
             LOGGER.error("Unable to write JSON test results", exception);
         }

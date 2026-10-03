@@ -11,6 +11,7 @@ public final class FrameworkConstants {
 
     public static final String EXTENT_REPORT_PATH = REPORT_DIR.resolve("ExtentReport.html").toString();
     public static final String JSON_RESULTS_PATH = RESULTS_DIR.resolve("test-results.json").toString();
+    public static final String EXCEL_RESULTS_PATH = RESULTS_DIR.resolve("test-results.xlsx").toString();
 
     private FrameworkConstants() {
     }

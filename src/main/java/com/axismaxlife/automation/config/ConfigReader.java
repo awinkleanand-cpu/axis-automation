@@ -59,6 +59,22 @@ public final class ConfigReader {
         return Integer.parseInt(value.trim());
     }
 
+    public static String getOptional(String key, String defaultValue) {
+        String value = PROPERTIES.getProperty(key);
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        return value.trim();
+    }
+
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        String value = PROPERTIES.getProperty(key);
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value.trim());
+    }
+
     public static Path resolvePath(String key) {
         return Path.of(get(key)).toAbsolutePath().normalize();
     }

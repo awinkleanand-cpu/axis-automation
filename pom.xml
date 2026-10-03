@@ -23,6 +23,8 @@
         <log4j.version>2.24.3</log4j.version>
         <jackson.version>2.18.2</jackson.version>
         <commons.io.version>2.18.0</commons.io.version>
+        <poi.version>5.3.0</poi.version>
+        <angus.mail.version>2.0.3</angus.mail.version>
     </properties>
 
     <dependencies>
@@ -66,6 +68,16 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <version>${angus.mail.version}</version>
         </dependency>
     </dependencies>
 
