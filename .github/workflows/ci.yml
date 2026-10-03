@@ -2,9 +2,9 @@ name: Axis Max Life Automation CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ demo-automation ]
   pull_request:
-    branches: [ main ]
+    branches: [ demo-automation ]
   workflow_dispatch:
 
 concurrency:
