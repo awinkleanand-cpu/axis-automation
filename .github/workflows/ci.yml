@@ -1,0 +1,103 @@
+name: Axis Max Life Automation CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Run Selenium Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Google Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Compile project
+        run: mvn -B clean compile test-compile
+
+      - name: Run automation tests
+        run: mvn -B test
+        env:
+          CI: true
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          INSURANCE_USER_ID: ${{ secrets.INSURANCE_USER_ID }}
+          INSURANCE_PASSWORD: ${{ secrets.INSURANCE_PASSWORD }}
+
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "## Automation Test Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f test-output/results/test-results.json ]; then
+            PASSED=$(jq -r '.passed' test-output/results/test-results.json)
+            FAILED=$(jq -r '.failed' test-output/results/test-results.json)
+            SKIPPED=$(jq -r '.skipped' test-output/results/test-results.json)
+            TOTAL=$(jq -r '.total' test-output/results/test-results.json)
+            GENERATED=$(jq -r '.generatedAt' test-output/results/test-results.json)
+
+            echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Passed | ${PASSED} |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Failed | ${FAILED} |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Skipped | ${SKIPPED} |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Total | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Generated at: ${GENERATED}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Test Details" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+
+            jq -r '.tests[] | "- **\(.testName)**: \(.status) (\(.durationMs) ms)"' test-output/results/test-results.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Test result file was not generated. Check workflow logs and Surefire reports." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the **automation-reports** artifact for Extent HTML, Excel, screenshots, and logs." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload automation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-reports-${{ github.run_number }}
+          path: |
+            test-output/
+            target/surefire-reports/
+          retention-days: 14
+
+      - name: Fail workflow if tests failed
+        if: always()
+        run: |
+          if [ -f test-output/results/test-results.json ]; then
+            FAILED=$(jq -r '.failed' test-output/results/test-results.json)
+            if [ "$FAILED" -gt 0 ]; then
+              echo "Tests failed: $FAILED"
+              exit 1
+            fi
+          elif [ -f target/surefire-reports/testng-results.xml ]; then
+            FAILURES=$(grep -o 'failed="[0-9]*"' target/surefire-reports/testng-results.xml | head -1 | grep -o '[0-9]*')
+            if [ -n "$FAILURES" ] && [ "$FAILURES" -gt 0 ]; then
+              echo "Tests failed: $FAILURES"
+              exit 1
+            fi
+          fi

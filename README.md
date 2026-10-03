@@ -14,6 +14,7 @@ Production-ready Selenium framework for automating the Axis Max Life insurance a
 - **TestNG listener** for automatic pass/fail reporting
 - **Retry analyzer** for flaky UI recovery
 - **Thread-safe DriverManager** for future parallel execution
+- **GitHub Actions CI** with automated reports and artifact upload
 
 ## Project Structure
 
@@ -52,6 +53,39 @@ axis-automation/
 ```bash
 mvn clean test
 ```
+
+## CI/CD (GitHub Actions)
+
+Every push or pull request to `main` triggers the workflow in `.github/workflows/ci.yml`.
+
+The pipeline:
+1. Compiles the project
+2. Installs Chrome and runs tests in headless mode
+3. Publishes a pass/fail summary in the GitHub Actions run page
+4. Uploads all reports as a downloadable artifact (retained for 14 days)
+
+### View CI results
+
+1. Open the repository on GitHub
+2. Go to **Actions** → select the latest workflow run
+3. Review the **Summary** tab for pass/fail counts
+4. Download **automation-reports-*** artifact for:
+   - `ExtentReport.html`
+   - `test-results.xlsx`
+   - `test-results.json`
+   - Screenshots and logs
+
+### Optional GitHub Secrets
+
+Add these under **Settings → Secrets and variables → Actions**:
+
+| Secret | Purpose |
+|---|---|
+| `INSURANCE_USER_ID` | Overrides `user.id` in CI |
+| `INSURANCE_PASSWORD` | Overrides `password` in CI |
+| `EMAIL_PASSWORD` | SMTP password for failure emails |
+
+CI automatically runs Chrome in headless mode when the `CI` environment variable is set.
 
 ## View Results
 

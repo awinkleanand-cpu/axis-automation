@@ -4,9 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
 
 public final class ConfigReader {
+
+    private static final Map<String, String> ENVIRONMENT_OVERRIDES = Map.of(
+            "user.id", "INSURANCE_USER_ID",
+            "password", "INSURANCE_PASSWORD"
+    );
 
     private static final Properties PROPERTIES = new Properties();
 
@@ -40,11 +46,22 @@ public final class ConfigReader {
     }
 
     public static String get(String key) {
-        String value = PROPERTIES.getProperty(key);
+        String value = resolveValue(key);
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Missing config key: " + key);
         }
         return value.trim();
+    }
+
+    private static String resolveValue(String key) {
+        String environmentKey = ENVIRONMENT_OVERRIDES.get(key);
+        if (environmentKey != null) {
+            String environmentValue = System.getenv(environmentKey);
+            if (environmentValue != null && !environmentValue.isBlank()) {
+                return environmentValue.trim();
+            }
+        }
+        return PROPERTIES.getProperty(key);
     }
 
     public static int getInt(String key) {
