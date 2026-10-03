@@ -24,9 +24,11 @@ public class TheInternetHomePage extends BasePage {
     }
 
     public TheInternetLoginPage openFormAuthentication() {
-        logStep("Open Form Authentication example");
-        waitUtils.click(FORM_AUTH_LINK);
+        String loginUrl = ConfigReader.get("theinternet.url").replaceAll("/$", "") + "/login";
+        logStep("Open Form Authentication: " + loginUrl);
+        driver.get(loginUrl);
         waitUtils.waitForPageLoad();
+        waitUtils.waitForVisible(By.id("username"));
         logStepWithScreenshot("Login form displayed");
         return new TheInternetLoginPage(driver);
     }

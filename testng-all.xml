@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="All Test Cases Suite" verbose="2">
+    <listeners>
+        <listener class-name="com.axismaxlife.automation.listeners.TestListener"/>
+    </listeners>
+    <test name="The Internet Form Auth E2E">
+        <classes>
+            <class name="com.axismaxlife.tests.TheInternetLoginTest"/>
+        </classes>
+    </test>
+    <test name="Sauce Demo Checkout E2E">
+        <classes>
+            <class name="com.axismaxlife.tests.SauceDemoCheckoutTest"/>
+        </classes>
+    </test>
+    <test name="HugeDomains Search E2E">
+        <classes>
+            <class name="com.axismaxlife.tests.HugeDomainsSearchTest"/>
+        </classes>
+    </test>
+    <test name="HugeDomains Search Cart Checkout E2E">
+        <classes>
+            <class name="com.axismaxlife.tests.HugeDomainsCheckoutTest"/>
+        </classes>
+    </test>
+    <test name="Axis Max Life Insurance Application E2E">
+        <classes>
+            <class name="com.axismaxlife.tests.InsuranceApplicationTest"/>
+        </classes>
+    </test>
+</suite>

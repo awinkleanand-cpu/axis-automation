@@ -13,7 +13,6 @@ public class TheInternetLoginTest extends BaseTest {
     @Test(description = "E2E: Form Authentication login and logout on the-internet.herokuapp.com")
     public void shouldLoginAndLogoutOnTheInternet() {
         TheInternetSecurePage securePage = new TheInternetHomePage(DriverManager.getDriver())
-                .open()
                 .openFormAuthentication()
                 .login();
 

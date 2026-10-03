@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 public class TheInternetSecurePage extends BasePage {
 
     private static final By FLASH = By.id("flash");
-    private static final By LOGOUT_BUTTON = By.cssSelector("a.button.secondary");
+    private static final By LOGOUT_BUTTON = By.cssSelector("a.button[href='/logout']");
 
     public TheInternetSecurePage(WebDriver driver) {
         super(driver);
@@ -25,12 +25,15 @@ public class TheInternetSecurePage extends BasePage {
     public TheInternetLoginPage logout() {
         logStep("Logout from secure area");
         waitUtils.click(LOGOUT_BUTTON);
+        waitUtils.waitForUrlContains("/login");
+        waitUtils.waitForTextPresent(FLASH, "logged out");
         waitUtils.waitForPageLoad();
         logStepWithScreenshot("Logged out");
         return new TheInternetLoginPage(driver);
     }
 
     public boolean isLoggedOut() {
+        waitUtils.waitForUrlContains("/login");
         String message = flashMessage().toLowerCase();
         return driver.getCurrentUrl().contains("/login") && message.contains("logged out");
     }

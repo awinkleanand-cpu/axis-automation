@@ -1,6 +1,7 @@
 package com.axismaxlife.tests.base;
 
 import com.axismaxlife.automation.config.FrameworkConstants;
+import com.axismaxlife.automation.config.ConfigReader;
 import com.axismaxlife.automation.utils.DriverManager;
 import com.axismaxlife.automation.utils.WebDriverFactory;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +36,23 @@ public abstract class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
+        if (DriverManager.isDriverInitialized()) {
+            pauseIfViewing();
+        }
         DriverManager.quitDriver();
         LOGGER.info("WebDriver session closed");
+    }
+
+    private void pauseIfViewing() {
+        int pauseSeconds = ConfigReader.getOptionalInt("browser.view.pause.seconds", 0);
+        if (pauseSeconds <= 0) {
+            return;
+        }
+        try {
+            LOGGER.info("Keeping browser open for {} seconds so the run can be observed", pauseSeconds);
+            Thread.sleep(pauseSeconds * 1000L);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

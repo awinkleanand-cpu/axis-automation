@@ -16,9 +16,13 @@ public class TheInternetLoginPage extends BasePage {
     }
 
     public TheInternetSecurePage login() {
-        logStep("Login with published demo credentials");
-        waitUtils.type(USERNAME, ConfigReader.get("theinternet.username"));
-        waitUtils.type(PASSWORD, ConfigReader.get("theinternet.password"));
+        return login(ConfigReader.get("theinternet.username"), ConfigReader.get("theinternet.password"));
+    }
+
+    public TheInternetSecurePage login(String username, String password) {
+        logStep("Login as " + username);
+        waitUtils.type(USERNAME, username);
+        waitUtils.type(PASSWORD, password);
         waitUtils.click(LOGIN_BUTTON);
         waitUtils.waitForPageLoad();
         logStepWithScreenshot("Submitted login form");

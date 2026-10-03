@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pass / Fail Demo Test Report</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #fffdf8;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e7e0d4;
+      --fail: #9f1239;
+      --fail-bg: #ffe4e6;
+      --pass: #166534;
+      --pass-bg: #dcfce7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Calibri, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header { background: #1c1917; color: #fafaf9; padding: 28px 40px; }
+    header h1 { margin: 0 0 6px; font-size: 24px; font-weight: 650; }
+    header p { margin: 0; color: #d6d3d1; font-size: 14px; }
+    main { padding: 28px 40px 48px; max-width: 1200px; }
+    .meta, .kpis { display: grid; gap: 12px; margin-bottom: 24px; }
+    .meta { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .value { font-size: 16px; font-weight: 650; margin-top: 4px; }
+    .kpi .value { font-size: 28px; }
+    h2 { font-size: 18px; margin: 28px 0 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      font-size: 13.5px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #efe8db; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .pass { background: var(--pass-bg); color: var(--pass); }
+    .fail { background: var(--fail-bg); color: var(--fail); }
+    footer { color: var(--muted); font-size: 12px; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pass / Fail Demo Test Report</h1>
+    <p>Branch demo-automation · Microsoft Edge · 03 Oct 2026, 17:57–18:01 IST</p>
+  </header>
+  <main>
+    <div class="meta">
+      <div class="card"><div class="label">Suite</div><div class="value">Pass Fail Demo Suite</div></div>
+      <div class="card"><div class="label">Classes</div><div class="value">PassingScenariosTest · FailingScenariosTest</div></div>
+      <div class="card"><div class="label">Browser</div><div class="value">Microsoft Edge 154</div></div>
+      <div class="card"><div class="label">Overall</div><div class="value"><span class="badge fail">10 PASS / 10 FAIL</span></div></div>
+    </div>
+    <div class="kpis">
+      <div class="card kpi"><div class="label">Total</div><div class="value">20</div></div>
+      <div class="card kpi"><div class="label">Passed</div><div class="value">10</div></div>
+      <div class="card kpi"><div class="label">Failed</div><div class="value">10</div></div>
+      <div class="card kpi"><div class="label">Skipped</div><div class="value">0</div></div>
+    </div>
+
+    <h2>Passing scenarios (10)</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Scenario</th><th>Actual</th><th>ms</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>TC-P-01</td><td>Open The Internet home page</td><td>Home page loaded</td><td>33330</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-02</td><td>Form Authentication login fields are visible</td><td>Login form displayed</td><td>31312</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-03</td><td>Valid The Internet login reaches secure area</td><td>Logged in to secure area</td><td>32864</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-04</td><td>Logout returns to the login page</td><td>Logged out successfully</td><td>34822</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-05</td><td>Sauce Demo login page loads</td><td>Login page loaded</td><td>501</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-06</td><td>Valid Sauce Demo login opens inventory</td><td>Inventory loaded</td><td>859</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-07</td><td>Add backpack and verify cart</td><td>Backpack listed in cart</td><td>1510</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-08</td><td>Complete Sauce Demo checkout</td><td>Checkout completed</td><td>2602</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-09</td><td>Secure area URL contains /secure</td><td>Secure URL verified</td><td>3721</td><td><span class="badge pass">PASS</span></td></tr>
+        <tr><td>TC-P-10</td><td>Sauce Demo login button is present</td><td>Login button present</td><td>364</td><td><span class="badge pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Failing scenarios (10)</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Scenario</th><th>Actual</th><th>ms</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>TC-F-01</td><td>Invalid The Internet password still reaches secure area</td><td>expected [true] but found [false]</td><td>4065</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-02</td><td>Sauce Demo login with wrong password opens inventory</td><td>expected [true] but found [false]</td><td>1018</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-03</td><td>Locked-out Sauce Demo user can browse products</td><td>expected [true] but found [false]</td><td>856</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-04</td><td>Empty cart contains a product</td><td>expected [true] but found [false]</td><td>1475</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-05</td><td>Sauce Demo title is HugeDomains</td><td>expected [HugeDomains] but found [Swag Labs]</td><td>555</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-06</td><td>The Internet home title is Swag Labs</td><td>expected [Swag Labs] but found [The Internet]</td><td>31543</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-07</td><td>Valid login lands on /admin</td><td>expected [true] but found [false]</td><td>33739</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-08</td><td>Order is complete without adding a product</td><td>expected [false] but found [true]</td><td>1157</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-09</td><td>Backpack add button exists on the login page</td><td>expected [false] but found [true]</td><td>430</td><td><span class="badge fail">FAIL</span></td></tr>
+        <tr><td>TC-F-10</td><td>HugeDomains home page title is Swag Labs</td><td>expected [Swag Labs] but found HugeDomains branding</td><td>2007</td><td><span class="badge fail">FAIL</span></td></tr>
+      </tbody>
+    </table>
+    <footer>
+      Source: TestNG run of testng-pass-fail.xml on 03 Oct 2026. Maven reports FAIL because 10 cases are intended failures.
+    </footer>
+  </main>
+</body>
+</html>

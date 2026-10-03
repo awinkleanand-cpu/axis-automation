@@ -26,12 +26,16 @@ public class SauceDemoLoginPage extends BasePage {
     }
 
     public SauceDemoInventoryPage login() {
-        logStep("Login as " + ConfigReader.get("saucedemo.username"));
-        waitUtils.type(USERNAME, ConfigReader.get("saucedemo.username"));
-        waitUtils.type(PASSWORD, ConfigReader.get("saucedemo.password"));
+        return login(ConfigReader.get("saucedemo.username"), ConfigReader.get("saucedemo.password"));
+    }
+
+    public SauceDemoInventoryPage login(String username, String password) {
+        logStep("Login as " + username);
+        waitUtils.type(USERNAME, username);
+        waitUtils.type(PASSWORD, password);
         waitUtils.click(LOGIN_BUTTON);
         waitUtils.waitForPageLoad();
-        logStepWithScreenshot("Logged in to inventory");
+        logStepWithScreenshot("Submitted Sauce Demo login");
         return new SauceDemoInventoryPage(driver);
     }
 }

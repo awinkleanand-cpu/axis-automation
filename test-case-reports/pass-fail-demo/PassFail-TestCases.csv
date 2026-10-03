@@ -1,0 +1,21 @@
+TC ID,Scenario,Type,Expected Result,Actual Result,Duration ms,Status
+TC-P-01,Open The Internet home page,Pass,Home URL contains the-internet.herokuapp.com,Home page loaded,33330,PASS
+TC-P-02,Form Authentication login fields are visible,Pass,Username field is present,Login form displayed,31312,PASS
+TC-P-03,Valid The Internet login reaches secure area,Pass,User is logged in,Logged in to secure area,32864,PASS
+TC-P-04,Logout returns to the login page,Pass,User is logged out,Logged out successfully,34822,PASS
+TC-P-05,Sauce Demo login page loads,Pass,Title contains Swag Labs,Login page loaded,501,PASS
+TC-P-06,Valid Sauce Demo login opens inventory,Pass,Inventory container is present,Inventory loaded,859,PASS
+TC-P-07,Add backpack and verify cart,Pass,Cart contains an item,Backpack listed in cart,1510,PASS
+TC-P-08,Complete Sauce Demo checkout,Pass,Order confirmation is shown,Checkout completed,2602,PASS
+TC-P-09,Secure area URL contains /secure,Pass,URL contains /secure,Secure URL verified,3721,PASS
+TC-P-10,Sauce Demo login button is present,Pass,login-button is present,Login button present,364,PASS
+TC-F-01,Invalid The Internet password still reaches secure area,Fail,Assertion of logged-in state fails for wrong password,expected [true] but found [false],4065,FAIL
+TC-F-02,Sauce Demo login with wrong password opens inventory,Fail,Inventory does not load,expected [true] but found [false],1018,FAIL
+TC-F-03,Locked-out Sauce Demo user can browse products,Fail,Inventory does not load for locked_out_user,expected [true] but found [false],856,FAIL
+TC-F-04,Empty cart contains a product,Fail,Empty cart hasItems is false,expected [true] but found [false],1475,FAIL
+TC-F-05,Sauce Demo title is HugeDomains,Fail,Title is Swag Labs not HugeDomains,expected [HugeDomains] but found [Swag Labs],555,FAIL
+TC-F-06,The Internet home title is Swag Labs,Fail,Title is The Internet,expected [Swag Labs] but found [The Internet],31543,FAIL
+TC-F-07,Valid login lands on /admin,Fail,URL contains /secure not /admin,expected [true] but found [false],33739,FAIL
+TC-F-08,Order is complete without adding a product,Fail,complete-header is absent on inventory,expected [false] but found [true],1157,FAIL
+TC-F-09,Backpack add button exists on the login page,Fail,Button is not on login page,expected [false] but found [true],430,FAIL
+TC-F-10,HugeDomains home page title is Swag Labs,Fail,Title is HugeDomains branding,expected [Swag Labs] but found [The #1 Source For Domain Names | HugeDomains],2007,FAIL

@@ -19,6 +19,12 @@ public class SauceDemoInventoryPage extends BasePage {
         return !driver.findElements(INVENTORY_CONTAINER).isEmpty();
     }
 
+    public SauceDemoCartPage openCart() {
+        waitUtils.click(CART_LINK);
+        waitUtils.waitForPageLoad();
+        return new SauceDemoCartPage(driver);
+    }
+
     public SauceDemoCartPage addBackpackAndOpenCart() {
         logStep("Add Sauce Labs Backpack to cart");
         waitUtils.click(ADD_BACKPACK);
