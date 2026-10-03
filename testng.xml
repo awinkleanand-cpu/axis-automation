@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Axis Max Life Automation Suite" verbose="2">
+<suite name="Axis Automation Suite" verbose="2">
     <listeners>
         <listener class-name="com.axismaxlife.automation.listeners.TestListener"/>
     </listeners>
-    <test name="Insurance Application Workflow">
+    <test name="The Internet Form Auth E2E">
         <classes>
-            <class name="com.axismaxlife.tests.InsuranceApplicationTest"/>
+            <class name="com.axismaxlife.tests.TheInternetLoginTest"/>
         </classes>
     </test>
 </suite>

@@ -12,22 +12,27 @@ public final class CaptchaGuard {
         String pageTitle = driver.getTitle().toLowerCase();
         String pageSource = driver.getPageSource().toLowerCase();
 
-        if (currentUrl.contains("perfdrive.com")
-                || currentUrl.contains("validate.")
+        boolean blocked = currentUrl.contains("perfdrive.com")
                 || pageTitle.contains("captcha")
                 || pageTitle.contains("radware")
+                || pageTitle.contains("just a moment")
+                || pageTitle.contains("attention required")
                 || pageSource.contains("bot manager")
-                || pageSource.contains("perfdrive")) {
+                || pageSource.contains("perfdrive")
+                || pageSource.contains("you have been blocked")
+                || pageSource.contains("cf-browser-verification")
+                || pageSource.contains("cdn-cgi/challenge");
+
+        if (blocked) {
             throw new BotChallengeException(buildMessage(driver));
         }
     }
 
     private static String buildMessage(WebDriver driver) {
-        return "UAT portal blocked automated access with Radware Bot Manager / captcha. "
+        return "The target site blocked automated access (captcha / bot protection). "
                 + "Current URL: " + driver.getCurrentUrl() + ". "
-                + "Ask the Axis Max Life UAT team to whitelist this machine's IP for automation, "
-                + "or run the test from an approved network. "
-                + "See README section 'Radware / Bot Manager whitelist'.";
+                + "This framework does not bypass security challenges. "
+                + "Use an approved test environment or request IP allowlisting.";
     }
 
     public static class BotChallengeException extends RuntimeException {
