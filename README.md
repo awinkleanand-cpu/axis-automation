@@ -58,11 +58,20 @@ mvn clean test
 
 Every push or pull request to `main` triggers the workflow in `.github/workflows/ci.yml`.
 
-The pipeline:
-1. Compiles the project
-2. Installs Chrome and runs tests in headless mode
+The pipeline has two jobs:
+
+| Job | Purpose |
+|---|---|
+| **Compile & Validate** | Ensures code compiles (always required) |
+| **Run Selenium E2E Tests** | Runs headless Chrome tests, publishes results, uploads artifacts |
+
+E2E job steps:
+1. Checks UAT portal connectivity
+2. Runs tests in headless mode
 3. Publishes a pass/fail summary in the GitHub Actions run page
 4. Uploads all reports as a downloadable artifact (retained for 14 days)
+
+> **Important:** The UAT portal (`mprouat.axismaxlife.com`) may only be reachable from your corporate network/VPN. If GitHub Actions cannot reach it, the **build job will still pass** but E2E tests may fail. Run tests locally with `mvn clean test` when on VPN.
 
 ### View CI results
 

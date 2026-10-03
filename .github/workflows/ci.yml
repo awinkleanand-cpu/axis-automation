@@ -12,8 +12,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Build & Run Selenium Tests
+  build:
+    name: Compile & Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compile project
+        run: mvn -B clean compile test-compile
+
+  e2e-test:
+    name: Run Selenium E2E Tests
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -31,8 +51,14 @@ jobs:
       - name: Install Google Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: Compile project
-        run: mvn -B clean compile test-compile
+      - name: Check UAT portal connectivity
+        run: |
+          echo "Checking connectivity to UAT portal..."
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://mprouat.axismaxlife.com" || echo "000")
+          echo "HTTP response code: ${HTTP_CODE}"
+          if [ "$HTTP_CODE" = "000" ] || [ "$HTTP_CODE" -ge 400 ]; then
+            echo "::warning::UAT portal may be unreachable from GitHub Actions (HTTP ${HTTP_CODE}). E2E tests might fail."
+          fi
 
       - name: Run automation tests
         run: mvn -B test
@@ -74,6 +100,8 @@ jobs:
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Download the **automation-reports** artifact for Extent HTML, Excel, screenshots, and logs." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "> **Note:** If E2E tests fail with login timeout, the UAT portal may require VPN or internal network access not available to GitHub runners." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload automation reports
         if: always()

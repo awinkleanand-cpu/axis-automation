@@ -10,11 +10,20 @@ public class RetryAnalyzer implements IRetryAnalyzer {
 
     @Override
     public boolean retry(ITestResult result) {
+        if (isCiEnvironment()) {
+            return false;
+        }
+
         int maxRetry = ConfigReader.getOptionalInt("max.retry.count", 1);
         if (retryCount < maxRetry) {
             retryCount++;
             return true;
         }
         return false;
+    }
+
+    private boolean isCiEnvironment() {
+        String ci = System.getenv("CI");
+        return ci != null && Boolean.parseBoolean(ci);
     }
 }
