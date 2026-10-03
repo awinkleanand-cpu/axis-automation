@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 public class HugeDomainsSearchTest extends BaseTest {
 
-    @Test(description = "E2E: search a domain on HugeDomains and open the first listing")
+    @Test(description = "E2E: search a domain on HugeDomains and open a listing")
     public void shouldSearchAndOpenDomainListing() {
         String keyword = ConfigReader.get("demo.search.keyword");
 
@@ -21,9 +21,12 @@ public class HugeDomainsSearchTest extends BaseTest {
                 .search(keyword);
 
         Assert.assertTrue(resultsPage.hasResults(), "Search results should be displayed for: " + keyword);
-        ReportManager.logPass("Search results displayed for keyword: " + keyword);
+        Assert.assertTrue(resultsPage.showsAvailabilityStatus(),
+                "Availability status should be visible for: " + keyword);
+        ReportManager.logPass("Search results displayed for keyword: " + keyword
+                + " status=" + resultsPage.availabilityStatus());
 
-        HugeDomainsDomainPage domainPage = resultsPage.openFirstResult();
+        HugeDomainsDomainPage domainPage = resultsPage.openAvailableListing();
         Assert.assertTrue(domainPage.isDetailsPageDisplayed(),
                 "Domain details page should load. Title: " + domainPage.pageTitle());
         ReportManager.logPass("Domain details page opened: " + domainPage.pageTitle());

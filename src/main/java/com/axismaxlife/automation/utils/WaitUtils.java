@@ -26,6 +26,20 @@ public final class WaitUtils {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
+    public WebElement waitForFirstVisible(List<By> locators) {
+        return wait.until(driver -> {
+            for (By locator : locators) {
+                List<WebElement> elements = driver.findElements(locator);
+                for (WebElement element : elements) {
+                    if (element.isDisplayed()) {
+                        return element;
+                    }
+                }
+            }
+            return null;
+        });
+    }
+
     public WebElement waitForClickable(By locator) {
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
@@ -37,6 +51,14 @@ public final class WaitUtils {
     public void waitForPageLoad() {
         wait.until(webDriver -> "complete".equals(
                 ((JavascriptExecutor) webDriver).executeScript("return document.readyState")));
+    }
+
+    public void waitForUrlContains(String fragment) {
+        wait.until(ExpectedConditions.urlContains(fragment));
+    }
+
+    public void waitForTextPresent(By locator, String text) {
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
     }
 
     public void click(By locator) {
