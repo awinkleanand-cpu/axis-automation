@@ -1,0 +1,25 @@
+{
+  "suite": "HugeDomains Search Cart Checkout E2E",
+  "application": "https://www.hugedomains.com/",
+  "branch": "demo-automation",
+  "testClass": "com.axismaxlife.tests.HugeDomainsCheckoutTest",
+  "testMethod": "shouldSearchAddToCartAndStopAtPayment",
+  "executedAt": "2026-10-03T17:44:24+05:30",
+  "finishedAt": "2026-10-03T17:44:32+05:30",
+  "durationMs": 5222,
+  "browser": "Chrome 154.0.8037.58",
+  "os": "Windows 10",
+  "framework": "Java 17 + Selenium 4.27.0 + TestNG 7.10.2",
+  "searchKeyword": "mytestdomain.com",
+  "fallbackKeyword": "coffee",
+  "totals": {
+    "scenarios": 8,
+    "passed": 0,
+    "failed": 1,
+    "blocked": 7,
+    "skipped": 0
+  },
+  "overallStatus": "FAIL",
+  "blocker": "BotChallengeException: HugeDomains presented captcha / bot protection on the home page. Automated access was not bypassed.",
+  "currentUrlAtFailure": "https://www.hugedomains.com/"
+}

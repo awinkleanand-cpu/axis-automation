@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HugeDomains E2E Test Case Report</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #fffdf8;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e7e0d4;
+      --fail: #9f1239;
+      --fail-bg: #ffe4e6;
+      --blocked: #92400e;
+      --blocked-bg: #ffedd5;
+      --pass: #166534;
+      --pass-bg: #dcfce7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Calibri, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header {
+      background: #1c1917;
+      color: #fafaf9;
+      padding: 28px 40px;
+    }
+    header h1 { margin: 0 0 6px; font-size: 24px; font-weight: 650; }
+    header p { margin: 0; color: #d6d3d1; font-size: 14px; }
+    main { padding: 28px 40px 48px; max-width: 1200px; }
+    .meta, .kpis {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .meta { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .card .value { font-size: 16px; font-weight: 650; margin-top: 4px; }
+    .kpi .value { font-size: 28px; }
+    h2 { font-size: 18px; margin: 28px 0 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      font-size: 13.5px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #efe8db; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .fail { background: var(--fail-bg); color: var(--fail); }
+    .blocked { background: var(--blocked-bg); color: var(--blocked); }
+    .pass { background: var(--pass-bg); color: var(--pass); }
+    .note {
+      background: var(--fail-bg);
+      border: 1px solid #fecdd3;
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--fail);
+    }
+    footer { color: var(--muted); font-size: 12px; margin-top: 28px; }
+    @media (max-width: 800px) {
+      main, header { padding: 20px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HugeDomains E2E Test Case Report</h1>
+    <p>Branch <strong>demo-automation</strong> · Java Selenium POM · TestNG · 03 Oct 2026</p>
+  </header>
+  <main>
+    <div class="meta">
+      <div class="card"><div class="label">Application</div><div class="value">https://www.hugedomains.com/</div></div>
+      <div class="card"><div class="label">Test class</div><div class="value">HugeDomainsCheckoutTest</div></div>
+      <div class="card"><div class="label">Executed at</div><div class="value">03 Oct 2026, 17:44 IST</div></div>
+      <div class="card"><div class="label">Duration</div><div class="value">5.222 seconds</div></div>
+      <div class="card"><div class="label">Browser</div><div class="value">Chrome 154.0.8037.58</div></div>
+      <div class="card"><div class="label">Overall result</div><div class="value"><span class="badge fail">FAIL</span></div></div>
+    </div>
+
+    <div class="kpis">
+      <div class="card kpi"><div class="label">Scenarios</div><div class="value">8</div></div>
+      <div class="card kpi"><div class="label">Passed</div><div class="value">0</div></div>
+      <div class="card kpi"><div class="label">Failed</div><div class="value">1</div></div>
+      <div class="card kpi"><div class="label">Blocked</div><div class="value">7</div></div>
+      <div class="card kpi"><div class="label">Skipped</div><div class="value">0</div></div>
+    </div>
+
+    <div class="note">
+      <strong>Blocker:</strong> HugeDomains showed captcha / bot protection on the home page.
+      <code>CaptchaGuard</code> failed the run and did not attempt to bypass the challenge.
+      Remaining cart and checkout scenarios were not reached.
+    </div>
+
+    <h2>Scenarios</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Scenario</th>
+          <th>Steps</th>
+          <th>Expected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TC-HD-01</td>
+          <td>Open HugeDomains home page</td>
+          <td>Launch Chrome, open https://www.hugedomains.com/, wait for the search box.</td>
+          <td>Home page loads with a visible domain search field.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-02</td>
+          <td>Search for domain mytestdomain.com</td>
+          <td>Type the domain in search and submit.</td>
+          <td>Search results page loads for the keyword.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-03</td>
+          <td>Validate domain availability status</td>
+          <td>Read listing or status text on the results page.</td>
+          <td>Status is shown: FOR_SALE, UNAVAILABLE, NO_RESULTS, or LISTED.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-04</td>
+          <td>Fallback search when exact domain is not listed</td>
+          <td>If unavailable, search fallback keyword coffee.</td>
+          <td>Fallback results load with an availability status.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-05</td>
+          <td>Add listed domain to cart</td>
+          <td>Click Add to Cart / Buy Now on results or domain details.</td>
+          <td>A for-sale domain is added to the cart.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-06</td>
+          <td>Verify domain is listed on cart page</td>
+          <td>Open cart and match the selected domain token.</td>
+          <td>Cart page is loaded and lists the domain.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-07</td>
+          <td>Proceed from cart to checkout</td>
+          <td>Click Checkout / Proceed / Continue.</td>
+          <td>Checkout page loads. Payment is not submitted.</td>
+        </tr>
+        <tr>
+          <td>TC-HD-08</td>
+          <td>Stop on payment page without card details</td>
+          <td>Fill guest name/email only if required. Do not enter card data. Do not click Pay Now.</td>
+          <td>Payment page is shown; card fields stay empty; no confirmation page.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Scenario</th>
+          <th>Actual result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TC-HD-01</td>
+          <td>Open HugeDomains home page</td>
+          <td>Navigation started. Site returned a bot/captcha challenge. Test stopped with BotChallengeException. Current URL: https://www.hugedomains.com/</td>
+          <td><span class="badge fail">FAIL</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-02</td>
+          <td>Search for domain mytestdomain.com</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-03</td>
+          <td>Validate domain availability status</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-04</td>
+          <td>Fallback search when exact domain is not listed</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-05</td>
+          <td>Add listed domain to cart</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-06</td>
+          <td>Verify domain is listed on cart page</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-07</td>
+          <td>Proceed from cart to checkout</td>
+          <td>Not executed. Blocked by TC-HD-01.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+        <tr>
+          <td>TC-HD-08</td>
+          <td>Stop on payment page without card details</td>
+          <td>Not executed. Blocked by TC-HD-01. No payment details were entered.</td>
+          <td><span class="badge blocked">BLOCKED</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Execution log (excerpt)</h2>
+    <table>
+      <thead>
+        <tr><th>Time</th><th>Event</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>17:44:17</td><td>Framework output directories initialized</td></tr>
+        <tr><td>17:44:24</td><td>WebDriver session started (Chrome)</td></tr>
+        <tr><td>17:44:24</td><td>Open HugeDomains home: https://www.hugedomains.com/</td></tr>
+        <tr><td>17:44:31</td><td>BotChallengeException — captcha / bot protection detected</td></tr>
+        <tr><td>17:44:31</td><td>WebDriver session closed</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Generated from TestNG run of HugeDomainsCheckoutTest on branch demo-automation.
+      Source files: HugeDomains-TestCases.csv and execution-summary.json in this folder.
+      Runtime artifacts (screenshots, Extent HTML) remain under test-output/ and are gitignored.
+    </footer>
+  </main>
+</body>
+</html>
