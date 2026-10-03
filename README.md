@@ -60,18 +60,63 @@ Every push or pull request to `main` triggers the workflow in `.github/workflows
 
 The pipeline has two jobs:
 
-| Job | Purpose |
+| Job | Runner | Purpose |
+|---|---|---|
+| **Compile & Validate** | GitHub-hosted (Ubuntu) | Ensures code compiles |
+| **Run Selenium E2E Tests** | Self-hosted (Windows) | Runs tests on your internal network |
+
+E2E tests run on a **self-hosted runner** inside your corporate network so they can reach the UAT portal.
+
+### Self-hosted runner setup (one-time)
+
+#### Step 1: Install prerequisites on your Windows machine
+
+Run the prerequisite checker:
+
+```powershell
+cd C:\Users\Awinkle Anand\Projects\axis-automation
+.\scripts\check-prerequisites.ps1
+```
+
+Required:
+- Java 17+
+- Maven 3.9+
+- Google Chrome
+- VPN connected (UAT portal must be reachable)
+
+#### Step 2: Get a registration token from GitHub
+
+1. Open https://github.com/awinkleanand-cpu/axis-automation/settings/actions/runners/new
+2. Select **Windows**
+3. Copy the token shown under `./config.cmd --token` (expires in 1 hour)
+
+#### Step 3: Register the runner
+
+```powershell
+cd C:\Users\Awinkle Anand\Projects\axis-automation
+.\scripts\setup-self-hosted-runner.ps1 -RegistrationToken "YOUR_TOKEN_HERE" -InstallAsService
+```
+
+This will:
+- Download the GitHub Actions runner
+- Register it with labels `windows` and `axis-maxlife-uat`
+- Install and start it as a Windows service (runs on boot)
+
+#### Step 4: Verify
+
+1. Go to **Settings → Actions → Runners** on GitHub — runner should show as **Idle** (green)
+2. Push a commit or manually trigger the workflow from **Actions → Run workflow**
+3. E2E job will run on your machine and upload reports
+
+#### Runner management
+
+| Action | Command |
 |---|---|
-| **Compile & Validate** | Ensures code compiles (always required) |
-| **Run Selenium E2E Tests** | Runs headless Chrome tests, publishes results, uploads artifacts |
+| Stop service | `C:\actions-runner\axis-automation\svc.cmd stop` |
+| Start service | `C:\actions-runner\axis-automation\svc.cmd start` |
+| Remove runner | `C:\actions-runner\axis-automation\config.cmd remove` |
 
-E2E job steps:
-1. Checks UAT portal connectivity
-2. Runs tests in headless mode
-3. Publishes a pass/fail summary in the GitHub Actions run page
-4. Uploads all reports as a downloadable artifact (retained for 14 days)
-
-> **Important:** The UAT portal (`mprouat.axismaxlife.com`) may only be reachable from your corporate network/VPN. If GitHub Actions cannot reach it, the **build job will still pass** but E2E tests may fail. Run tests locally with `mvn clean test` when on VPN.
+> **Note:** Until a self-hosted runner is registered, the E2E job will stay queued. The compile job still runs on every push.
 
 ### View CI results
 

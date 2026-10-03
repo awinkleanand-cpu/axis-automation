@@ -32,35 +32,64 @@ jobs:
         run: mvn -B clean compile test-compile
 
   e2e-test:
-    name: Run Selenium E2E Tests
+    name: Run Selenium E2E Tests (Self-Hosted)
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, windows, axis-maxlife-uat]
     timeout-minutes: 45
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
+      - name: Verify prerequisites
+        shell: pwsh
+        run: |
+          Write-Host "Runner: $env:RUNNER_NAME"
+          Write-Host "OS: $([System.Environment]::OSVersion.VersionString)"
 
-      - name: Install Google Chrome
-        uses: browser-actions/setup-chrome@v1
+          $errors = @()
+
+          if (-not (Get-Command java -ErrorAction SilentlyContinue)) {
+            $errors += "Java 17+ not found in PATH"
+          } else {
+            java -version
+          }
+
+          if (-not (Get-Command mvn -ErrorAction SilentlyContinue)) {
+            $errors += "Maven not found in PATH"
+          } else {
+            mvn -version
+          }
+
+          $chromePaths = @(
+            "${env:ProgramFiles}\Google\Chrome\Application\chrome.exe",
+            "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe"
+          )
+          $chrome = $chromePaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $chrome) {
+            $errors += "Google Chrome not found"
+          } else {
+            & $chrome --version
+          }
+
+          if ($errors.Count -gt 0) {
+            Write-Error ($errors -join "; ")
+            exit 1
+          }
 
       - name: Check UAT portal connectivity
+        shell: pwsh
         run: |
-          echo "Checking connectivity to UAT portal..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://mprouat.axismaxlife.com" || echo "000")
-          echo "HTTP response code: ${HTTP_CODE}"
-          if [ "$HTTP_CODE" = "000" ] || [ "$HTTP_CODE" -ge 400 ]; then
-            echo "::warning::UAT portal may be unreachable from GitHub Actions (HTTP ${HTTP_CODE}). E2E tests might fail."
-          fi
+          try {
+            $response = Invoke-WebRequest -Uri "https://mprouat.axismaxlife.com" -UseBasicParsing -TimeoutSec 30
+            Write-Host "UAT portal reachable - HTTP $($response.StatusCode)"
+          } catch {
+            Write-Warning "UAT portal may be unreachable: $($_.Exception.Message)"
+            Write-Warning "Ensure this machine is connected to VPN/corporate network."
+          }
 
       - name: Run automation tests
+        shell: pwsh
         run: mvn -B test
         env:
           CI: true
@@ -70,38 +99,38 @@ jobs:
 
       - name: Publish test summary
         if: always()
+        shell: pwsh
         run: |
-          echo "## Automation Test Results" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
+          $summaryFile = $env:GITHUB_STEP_SUMMARY
+          Add-Content -Path $summaryFile -Value "## Automation Test Results"
+          Add-Content -Path $summaryFile -Value ""
+          Add-Content -Path $summaryFile -Value "**Runner:** $env:RUNNER_NAME (self-hosted)"
 
-          if [ -f test-output/results/test-results.json ]; then
-            PASSED=$(jq -r '.passed' test-output/results/test-results.json)
-            FAILED=$(jq -r '.failed' test-output/results/test-results.json)
-            SKIPPED=$(jq -r '.skipped' test-output/results/test-results.json)
-            TOTAL=$(jq -r '.total' test-output/results/test-results.json)
-            GENERATED=$(jq -r '.generatedAt' test-output/results/test-results.json)
+          $resultsPath = "test-output/results/test-results.json"
+          if (Test-Path $resultsPath) {
+            $results = Get-Content $resultsPath | ConvertFrom-Json
+            Add-Content -Path $summaryFile -Value ""
+            Add-Content -Path $summaryFile -Value "| Metric | Count |"
+            Add-Content -Path $summaryFile -Value "|---|---|"
+            Add-Content -Path $summaryFile -Value "| Passed | $($results.passed) |"
+            Add-Content -Path $summaryFile -Value "| Failed | $($results.failed) |"
+            Add-Content -Path $summaryFile -Value "| Skipped | $($results.skipped) |"
+            Add-Content -Path $summaryFile -Value "| Total | $($results.total) |"
+            Add-Content -Path $summaryFile -Value ""
+            Add-Content -Path $summaryFile -Value "Generated at: $($results.generatedAt)"
+            Add-Content -Path $summaryFile -Value ""
+            Add-Content -Path $summaryFile -Value "### Test Details"
+            Add-Content -Path $summaryFile -Value ""
+            foreach ($test in $results.tests) {
+              $errorText = if ($test.error) { " - $($test.error)" } else { "" }
+              Add-Content -Path $summaryFile -Value "- **$($test.testName)**: $($test.status) ($($test.durationMs) ms)$errorText"
+            }
+          } else {
+            Add-Content -Path $summaryFile -Value "Test result file was not generated. Check workflow logs."
+          }
 
-            echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
-            echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Passed | ${PASSED} |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Failed | ${FAILED} |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Skipped | ${SKIPPED} |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Total | ${TOTAL} |" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Generated at: ${GENERATED}" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "### Test Details" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-
-            jq -r '.tests[] | "- **\(.testName)**: \(.status) (\(.durationMs) ms)"' test-output/results/test-results.json >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "Test result file was not generated. Check workflow logs and Surefire reports." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Download the **automation-reports** artifact for Extent HTML, Excel, screenshots, and logs." >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "> **Note:** If E2E tests fail with login timeout, the UAT portal may require VPN or internal network access not available to GitHub runners." >> "$GITHUB_STEP_SUMMARY"
+          Add-Content -Path $summaryFile -Value ""
+          Add-Content -Path $summaryFile -Value "Download the **automation-reports** artifact for Extent HTML, Excel, screenshots, and logs."
 
       - name: Upload automation reports
         if: always()
@@ -115,17 +144,20 @@ jobs:
 
       - name: Fail workflow if tests failed
         if: always()
+        shell: pwsh
         run: |
-          if [ -f test-output/results/test-results.json ]; then
-            FAILED=$(jq -r '.failed' test-output/results/test-results.json)
-            if [ "$FAILED" -gt 0 ]; then
-              echo "Tests failed: $FAILED"
+          $resultsPath = "test-output/results/test-results.json"
+          if (Test-Path $resultsPath) {
+            $results = Get-Content $resultsPath | ConvertFrom-Json
+            if ($results.failed -gt 0) {
+              Write-Error "Tests failed: $($results.failed)"
               exit 1
-            fi
-          elif [ -f target/surefire-reports/testng-results.xml ]; then
-            FAILURES=$(grep -o 'failed="[0-9]*"' target/surefire-reports/testng-results.xml | head -1 | grep -o '[0-9]*')
-            if [ -n "$FAILURES" ] && [ "$FAILURES" -gt 0 ]; then
-              echo "Tests failed: $FAILURES"
+            }
+          } elseif (Test-Path "target/surefire-reports/testng-results.xml") {
+            $xml = [xml](Get-Content "target/surefire-reports/testng-results.xml")
+            $failed = [int]$xml.'testng-results'.failed
+            if ($failed -gt 0) {
+              Write-Error "Tests failed: $failed"
               exit 1
-            fi
-          fi
+            }
+          }
