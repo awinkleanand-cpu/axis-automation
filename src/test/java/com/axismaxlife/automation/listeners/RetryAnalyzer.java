@@ -1,6 +1,7 @@
 package com.axismaxlife.automation.listeners;
 
 import com.axismaxlife.automation.config.ConfigReader;
+import com.axismaxlife.automation.utils.CaptchaGuard;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
@@ -10,7 +11,7 @@ public class RetryAnalyzer implements IRetryAnalyzer {
 
     @Override
     public boolean retry(ITestResult result) {
-        if (isCiEnvironment()) {
+        if (isCiEnvironment() || isBotChallengeFailure(result)) {
             return false;
         }
 
@@ -25,5 +26,16 @@ public class RetryAnalyzer implements IRetryAnalyzer {
     private boolean isCiEnvironment() {
         String ci = System.getenv("CI");
         return ci != null && Boolean.parseBoolean(ci);
+    }
+
+    private boolean isBotChallengeFailure(ITestResult result) {
+        Throwable throwable = result.getThrowable();
+        while (throwable != null) {
+            if (throwable instanceof CaptchaGuard.BotChallengeException) {
+                return true;
+            }
+            throwable = throwable.getCause();
+        }
+        return false;
     }
 }

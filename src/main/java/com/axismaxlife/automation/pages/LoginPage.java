@@ -2,6 +2,7 @@ package com.axismaxlife.automation.pages;
 
 import com.axismaxlife.automation.base.BasePage;
 import com.axismaxlife.automation.config.ConfigReader;
+import com.axismaxlife.automation.utils.CaptchaGuard;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,12 +39,14 @@ public class LoginPage extends BasePage {
         logStep("Navigate to login page: " + ConfigReader.get("base.url"));
         driver.get(ConfigReader.get("base.url"));
         waitUtils.waitForPageLoad();
+        CaptchaGuard.assertNoBotChallenge(driver);
         switchToLoginFrameIfPresent();
         logStepWithScreenshot("Login page loaded - title: " + driver.getTitle());
         return this;
     }
 
     public DashboardPage login() {
+        CaptchaGuard.assertNoBotChallenge(driver);
         logStep("Enter User ID and Password");
         WebElement userIdField = findFirstVisible(USER_ID_LOCATORS, "User ID");
         WebElement passwordField = findFirstVisible(PASSWORD_LOCATORS, "Password");

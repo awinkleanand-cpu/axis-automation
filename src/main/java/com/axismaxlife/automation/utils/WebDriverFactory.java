@@ -6,6 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.util.List;
+import java.util.Map;
+
 public final class WebDriverFactory {
 
     private WebDriverFactory() {
@@ -21,6 +24,18 @@ public final class WebDriverFactory {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.setExperimentalOption("prefs", Map.of(
+                "credentials_enable_service", false,
+                "profile.password_manager_enabled", false
+        ));
+
+        String userDataDir = ConfigReader.getOptional("chrome.user.data.dir", "");
+        if (!userDataDir.isBlank()) {
+            options.addArguments("--user-data-dir=" + userDataDir);
+        }
 
         if (shouldRunHeadless()) {
             options.addArguments("--headless=new");

@@ -184,6 +184,46 @@ When any test fails, an email is sent with:
 - `test-results.xlsx` attached
 - Latest failure screenshot attached
 
+## Radware / Bot Manager whitelist
+
+The UAT portal uses **Radware Bot Manager**. Automated Chrome sessions may be redirected to a captcha page (`validate.perfdrive.com`).
+
+The framework detects this and fails with a clear message. **Do not attempt to bypass captcha in code.**
+
+### Request template for Axis Max Life UAT / IT team
+
+```
+Subject: Whitelist IP for Selenium automation on mprouat.axismaxlife.com
+
+Please whitelist the following IP(s) in Radware Bot Manager for UAT automation:
+
+- Office IP: <your public IP>
+- CI runner IP: <self-hosted runner machine IP>
+
+Application: mprouat.axismaxlife.com
+Purpose: Automated regression testing (Selenium)
+User ID used in tests: 121939
+Contact: awinkle.anand@tothenew.com
+```
+
+Find your public IP: https://ifconfig.me
+
+After whitelisting, run:
+
+```powershell
+mvn clean test
+```
+
+### Optional: use your Chrome profile
+
+If manual login works in your normal Chrome browser, set in `resources/config.properties`:
+
+```properties
+chrome.user.data.dir=C:\\Users\\YourName\\AppData\\Local\\Google\\Chrome\\User Data\\AutomationProfile
+```
+
+Create a separate profile folder (do not point at your main Chrome profile while Chrome is open).
+
 ## Notes
 
 - Locators are label-driven for resilience across form layouts.
