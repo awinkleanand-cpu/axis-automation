@@ -51,6 +51,14 @@ public final class ConfigReader {
         return Integer.parseInt(get(key));
     }
 
+    public static int getOptionalInt(String key, int defaultValue) {
+        String value = PROPERTIES.getProperty(key);
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value.trim());
+    }
+
     public static Path resolvePath(String key) {
         return Path.of(get(key)).toAbsolutePath().normalize();
     }

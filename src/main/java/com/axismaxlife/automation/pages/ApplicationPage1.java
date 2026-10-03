@@ -11,6 +11,7 @@ public class ApplicationPage1 extends BasePage {
     }
 
     public ApplicationPage2 fillAndProceed() {
+        logStep("Fill Application Page 1 - Basic Details");
         waitUtils.selectDropdownByLabel("Residential Status", ConfigReader.get("residential.status"));
         waitUtils.selectDropdownByLabel("Nationality", ConfigReader.get("nationality"));
         waitUtils.selectRadioOrLabel("Policy For", ConfigReader.get("policy.for"));
@@ -19,6 +20,7 @@ public class ApplicationPage1 extends BasePage {
         waitUtils.setInputByLabel("PAN", ConfigReader.get("pan"));
         waitUtils.setInputByLabel("Mobile", ConfigReader.get("mobile"));
         waitUtils.setInputByLabel("Email", ConfigReader.get("email"));
+        logStepWithScreenshot("Application Page 1 completed");
         proceed();
         return new ApplicationPage2(driver);
     }

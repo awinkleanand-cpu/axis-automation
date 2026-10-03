@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>Axis Max Life Insurance Automation</name>
-    <description>Selenium automation for Axis Max Life insurance application workflow</description>
+    <description>Selenium automation framework for Axis Max Life insurance application workflow</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -19,7 +19,10 @@
         <selenium.version>4.27.0</selenium.version>
         <testng.version>7.10.2</testng.version>
         <webdrivermanager.version>5.9.2</webdrivermanager.version>
-        <slf4j.version>2.0.16</slf4j.version>
+        <extentreports.version>5.1.2</extentreports.version>
+        <log4j.version>2.24.3</log4j.version>
+        <jackson.version>2.18.2</jackson.version>
+        <commons.io.version>2.18.0</commons.io.version>
     </properties>
 
     <dependencies>
@@ -40,9 +43,29 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extentreports.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
         </dependency>
     </dependencies>
 
@@ -74,6 +97,12 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>true</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
         </plugins>

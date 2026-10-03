@@ -20,16 +20,20 @@ public class LoginPage extends BasePage {
     }
 
     public LoginPage open() {
+        logStep("Navigate to login page: " + ConfigReader.get("base.url"));
         driver.get(ConfigReader.get("base.url"));
         waitUtils.waitForPageLoad();
+        logStepWithScreenshot("Login page loaded");
         return this;
     }
 
     public DashboardPage login() {
+        logStep("Enter User ID and Password");
         waitUtils.type(USER_ID, ConfigReader.get("user.id"));
         waitUtils.type(PASSWORD, ConfigReader.get("password"));
         waitUtils.click(LOGIN_BUTTON);
         waitUtils.waitForPageLoad();
+        logStepWithScreenshot("Login successful");
         return new DashboardPage(driver);
     }
 }

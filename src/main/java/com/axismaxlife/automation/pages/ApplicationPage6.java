@@ -20,6 +20,7 @@ public class ApplicationPage6 extends BasePage {
     }
 
     public ApplicationPage6 fillDetails() {
+        logStep("Fill Application Page 6 - Payment and Documents");
         waitUtils.selectRadioOrLabel("Payor different from Proposer", ConfigReader.get("payor.different"));
         waitUtils.selectDropdownByLabel("Industry", ConfigReader.get("industry"));
         waitUtils.setInputByLabel("Duties", ConfigReader.get("duties"));
@@ -28,6 +29,7 @@ public class ApplicationPage6 extends BasePage {
         waitUtils.checkCheckboxByLabel("Terms");
         waitUtils.checkCheckboxByLabel("Agree");
         uploadRequiredDocuments();
+        logStepWithScreenshot("Application Page 6 completed");
         return this;
     }
 
@@ -57,7 +59,17 @@ public class ApplicationPage6 extends BasePage {
     }
 
     public void submitApplication() {
+        logStep("Submit insurance application");
         waitUtils.click(SUBMIT_BUTTON);
         waitUtils.waitForPageLoad();
+        logStepWithScreenshot("Application submitted");
+    }
+
+    public boolean isSubmissionSuccessful() {
+        String pageSource = driver.getPageSource().toLowerCase();
+        return pageSource.contains("success")
+                || pageSource.contains("submitted")
+                || pageSource.contains("thank you")
+                || pageSource.contains("application number");
     }
 }

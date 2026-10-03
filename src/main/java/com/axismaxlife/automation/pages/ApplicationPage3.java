@@ -14,7 +14,9 @@ public class ApplicationPage3 extends BasePage {
     }
 
     public ApplicationPage4 fillAndProceed() {
+        logStep("Fill Application Page 3 - Required Details");
         fillRequiredFieldsWithDefaults();
+        logStepWithScreenshot("Application Page 3 completed");
         proceed();
         return new ApplicationPage4(driver);
     }

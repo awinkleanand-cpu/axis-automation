@@ -16,8 +16,10 @@ public class DashboardPage extends BasePage {
     }
 
     public ApplicationPage1 startNewApplication() {
+        logStep("Click NEW Application button");
         waitUtils.click(NEW_APPLICATION_BUTTON);
         waitUtils.waitForPageLoad();
+        logStepWithScreenshot("New application started");
         return new ApplicationPage1(driver);
     }
 }

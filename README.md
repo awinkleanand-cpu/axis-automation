@@ -1,67 +1,83 @@
-# Axis Max Life Insurance Automation
+# Axis Max Life Insurance Automation Framework
 
-Selenium WebDriver automation for the Axis Max Life insurance application workflow on the UAT portal.
+Production-ready Selenium framework for automating the Axis Max Life insurance application workflow on the UAT portal.
 
-## Tech Stack
+## Framework Features
 
-- Java 17
-- Selenium WebDriver 4.x
-- TestNG
-- WebDriverManager
-- Page Object Model (POM)
+- **Page Object Model (POM)** for maintainable test design
+- **WebDriverWait** for reliable synchronization with dynamic UI
+- **ExtentReports** HTML dashboard with step-by-step logs and screenshots
+- **JSON test results** for CI/CD integration
+- **Log4j2** file and console logging
+- **Screenshot capture** on every major step and on failure
+- **TestNG listener** for automatic pass/fail reporting
+- **Retry analyzer** for flaky UI recovery
+- **Thread-safe DriverManager** for future parallel execution
 
 ## Project Structure
 
 ```
 axis-automation/
-├── drivers/                          # Optional manual WebDriver binaries
+├── drivers/                                    # Optional manual WebDriver binaries
 ├── resources/
-│   ├── config.properties             # Test data and environment config
-│   └── documents/                    # Sample files for upload steps
+│   ├── config.properties                       # Environment and test data
+│   └── documents/                              # Upload test files
 ├── src/main/java/com/axismaxlife/automation/
-│   ├── base/                         # Base page abstraction
-│   ├── config/                       # Config reader
-│   ├── pages/                        # Page Object classes
-│   └── utils/                        # WebDriver and wait helpers
-└── src/test/java/com/axismaxlife/tests/
-    └── InsuranceApplicationTest.java # End-to-end workflow test
+│   ├── base/                                   # BasePage
+│   ├── config/                                 # ConfigReader, FrameworkConstants
+│   ├── listeners/                              # TestListener, RetryAnalyzer
+│   ├── pages/                                  # LoginPage, ApplicationPage1-6, etc.
+│   ├── reporting/                              # ExtentManager, ReportManager, TestResultWriter
+│   └── utils/                                  # DriverManager, WaitUtils, ScreenshotUtils
+├── src/test/java/com/axismaxlife/tests/
+│   ├── base/BaseTest.java                      # Driver lifecycle
+│   └── InsuranceApplicationTest.java           # E2E workflow test
+└── test-output/                                # Generated after test run
+    ├── reports/ExtentReport.html               # Main HTML report
+    ├── results/test-results.json               # Machine-readable results
+    ├── screenshots/                            # Step and failure screenshots
+    └── logs/automation.log                     # Execution logs
 ```
 
 ## Prerequisites
 
 - Java 17+
 - Maven 3.9+
-- Google Chrome browser
-
-## Configuration
-
-Update `resources/config.properties` if credentials or test data change.
+- Google Chrome
 
 ## Run Tests
-
-From the project root:
 
 ```bash
 mvn clean test
 ```
 
-Or run the TestNG suite directly:
+## View Results
 
-```bash
-mvn clean test -DsuiteXmlFile=testng.xml
-```
+After execution, open:
+
+| Artifact | Path |
+|---|---|
+| HTML Report | `test-output/reports/ExtentReport.html` |
+| JSON Results | `test-output/results/test-results.json` |
+| Logs | `test-output/logs/automation.log` |
+| Screenshots | `test-output/screenshots/` |
+| TestNG Report | `target/surefire-reports/index.html` |
 
 ## Workflow Covered
 
 1. Login to `https://mprouat.axismaxlife.com`
-2. Start a new application
-3. Fill application pages 1 through 4
+2. Start new application
+3. Fill pages 1–4 with configured test data
 4. Skip POSV on page 5
-5. Complete payment/details on page 6
-6. Upload documents and submit
+5. Complete payment, documents, and terms on page 6
+6. Submit and verify success message
+
+## Configuration
+
+Edit `resources/config.properties` for credentials, test data, waits, and retry count.
 
 ## Notes
 
-- The framework uses `WebDriverWait` for dynamic elements.
-- Locators are label-driven to work with common form patterns on insurance portals.
-- If the UAT portal DOM changes, update the relevant page object locators.
+- Locators are label-driven for resilience across form layouts.
+- If a step fails, check `ExtentReport.html` and the failure screenshot in `test-output/screenshots/`.
+- Update page object locators if the UAT portal DOM changes.

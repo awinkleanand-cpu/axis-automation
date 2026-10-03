@@ -17,12 +17,14 @@ public class ApplicationPage5 extends BasePage {
     }
 
     public ApplicationPage6 skipPosvAndProceed() {
+        logStep("Skip POSV process on Page 5");
         if (!driver.findElements(SKIP_POSV).isEmpty()) {
             waitUtils.click(SKIP_POSV);
             waitUtils.waitForPageLoad();
         } else {
             waitUtils.clickButtonByText("Skip");
         }
+        logStepWithScreenshot("POSV skipped successfully");
         return new ApplicationPage6(driver);
     }
 }
