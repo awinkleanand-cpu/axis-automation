@@ -4,9 +4,9 @@
     <listeners>
         <listener class-name="com.axismaxlife.automation.listeners.TestListener"/>
     </listeners>
-    <test name="HugeDomains Search Cart Checkout E2E">
+    <test name="Sauce Demo Checkout E2E">
         <classes>
-            <class name="com.axismaxlife.tests.HugeDomainsCheckoutTest"/>
+            <class name="com.axismaxlife.tests.SauceDemoCheckoutTest"/>
         </classes>
     </test>
 </suite>
